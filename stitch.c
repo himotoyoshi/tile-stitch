@@ -106,6 +106,10 @@ static void fail(png_structp png_ptr, png_const_charp error_msg) {
 	exit(EXIT_FAILURE);
 }
 
+static void warn(png_structp png_ptr, png_const_charp error_msg) {
+	fprintf(stderr, "PNG warning %s\n", error_msg);
+}
+
 struct read_state {
 	char *base;
 	int off;
@@ -132,7 +136,7 @@ struct image *read_png(char *s, int len) {
 	state.off = 0;
 	state.len = len;
 
-	png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, fail, fail, fail);
+	png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, fail, fail, warn);
 	if (png_ptr == NULL) {
 		fprintf(stderr, "PNG init failed\n");
 		exit(EXIT_FAILURE);
@@ -460,7 +464,7 @@ int main(int argc, char **argv) {
 		png_structp png_ptr;
 		png_infop info_ptr;
 
-		png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, fail, fail, fail);
+		png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, fail, fail, warn);
 		if (png_ptr == NULL) {
 			fprintf(stderr, "PNG failure (write struct)\n");
 			exit(EXIT_FAILURE);
